@@ -1,10 +1,11 @@
+import sys
 import random
 import string
+import argparse
 from itertools import product, islice
 from pprint import pprint as pp
 
 
-length = 3
 exclude_words = ['pid']
 
 
@@ -22,8 +23,27 @@ def name_filter(name):
     return True
 
 
-names = filter(name_filter, (''.join(x) for x in product(string.ascii_lowercase,
-    repeat=length)))
+def get_names(root_length, suffix, n=10):
+    names = list(filter(name_filter, (''.join(x) for x in product(
+        string.ascii_lowercase, repeat=root_length))))
+    sample = random.sample(names, n)
+    sample = [x + suffix for x in sample]
+    return sample
 
 
-pp(random.sample(list(names), 10))
+def main():
+    parser = argparse.ArgumentParser(description='Generate project/app names.')
+    parser.add_argument('--root-length', type=int, default=3,
+                        help='length of root word')
+    parser.add_argument('--suffix', default='', help='specify a suffix')
+    args = parser.parse_args()
+
+    while True:
+        pp(get_names(args.root_length, args.suffix))
+        input()
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt:
+        print()
