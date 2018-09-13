@@ -23,10 +23,15 @@ def name_filter(name):
     return True
 
 
+def name_generator(root_length):
+    while True:
+        word = ''.join(random.choice(string.ascii_lowercase) for _ in range(root_length))
+        if name_filter(word):
+            yield word
+
+
 def get_names(root_length, suffix, n=10):
-    names = list(filter(name_filter, (''.join(x) for x in product(
-        string.ascii_lowercase, repeat=root_length))))
-    sample = random.sample(names, n)
+    sample = islice(name_generator(root_length), n)
     sample = [x + suffix for x in sample]
     return sample
 
